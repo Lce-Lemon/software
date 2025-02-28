@@ -1,0 +1,1822 @@
+{
+  "code": 0,
+  "message": "查询成功",
+  "timestamp": 1740704888269,
+  "data": [
+    {
+      "code": "aaaa",
+      "createTime": "2025-02-27 13:36:40",
+      "createUser": null,
+      "customMappingEnable": true,
+      "detailList": [
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": false,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": true,
+                    "key": "account",
+                    "mapping": "account",
+                    "name": "账号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "personnelCode",
+                    "mapping": "personnelCode",
+                    "name": "人员编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "telephone",
+                    "mapping": "telephone",
+                    "name": "手机号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "email",
+                    "mapping": "email",
+                    "name": "邮箱"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "roles",
+                    "mapping": "roles",
+                    "name": "角色编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "userList",
+                    "mapping": "userList",
+                    "name": "用户列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "36a1a624a4bb4bf093e7c19db513304f",
+          "serviceType": "0",
+          "subscriptionCode": "aaaa"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeCode",
+                    "mapping": "typeCode",
+                    "name": "类型编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeName",
+                    "mapping": "typeName",
+                    "name": "类型名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "parentId",
+                    "mapping": "parentId",
+                    "name": "父编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "orgList",
+                    "mapping": "orgList",
+                    "name": "组织列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "3566e2bf90d44645961217c2e1cbead3",
+          "serviceType": "1",
+          "subscriptionCode": "aaaa"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "remark",
+                    "mapping": "remark",
+                    "name": "备注"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "postList",
+                    "mapping": "postList",
+                    "name": "岗位列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "ec6d5d19d21249208b1517cf08fafac7",
+          "serviceType": "2",
+          "subscriptionCode": "aaaa"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "roleCode",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "accounts",
+                    "mapping": "accounts",
+                    "name": "账号列表"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "roleList",
+                    "mapping": "roleList",
+                    "name": "角色列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "8011ca46bff74577b11532262eb9a612",
+          "serviceType": "3",
+          "subscriptionCode": "aaaa"
+        }
+      ],
+      "name": "fffff",
+      "pkid": "2464e7bbce6d4f7b9929563999d258ac",
+      "scheduleConf": "1 m",
+      "scheduleEnable": true,
+      "scheduleType": "2",
+      "updateTime": "2025-02-27 13:36:40",
+      "updateUser": null,
+      "userFullSyncEnable": false
+    },
+    {
+      "code": "aaaaa",
+      "createTime": "2025-02-27 20:24:21",
+      "createUser": null,
+      "customMappingEnable": true,
+      "detailList": [
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": false,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": true,
+                    "key": "account",
+                    "mapping": "account",
+                    "name": "账号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "personnelCode",
+                    "mapping": "personnelCode",
+                    "name": "人员编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "telephone",
+                    "mapping": "telephone",
+                    "name": "手机号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "email",
+                    "mapping": "email",
+                    "name": "邮箱"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "roles",
+                    "mapping": "roles",
+                    "name": "角色编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "userList",
+                    "mapping": "userList",
+                    "name": "用户列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": "http://localhost:6800/api/subscriptionInfo/testNotify"
+              }
+            ]
+          },
+          "pkid": "942eba791ffd40cf82b351906a5ecaa3",
+          "serviceType": "0",
+          "subscriptionCode": "aaaaa"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeCode",
+                    "mapping": "typeCode",
+                    "name": "类型编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeName",
+                    "mapping": "typeName",
+                    "name": "类型名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "parentId",
+                    "mapping": "parentId",
+                    "name": "父编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "orgList",
+                    "mapping": "orgList",
+                    "name": "组织列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "54f318343d4f43ce910b4c13ad74bf2e",
+          "serviceType": "1",
+          "subscriptionCode": "aaaaa"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "remark",
+                    "mapping": "remark",
+                    "name": "备注"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "postList",
+                    "mapping": "postList",
+                    "name": "岗位列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "118e80de0f494adabba9300b05741c5f",
+          "serviceType": "2",
+          "subscriptionCode": "aaaaa"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "roleCode",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "accounts",
+                    "mapping": "accounts",
+                    "name": "账号列表"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "roleList",
+                    "mapping": "roleList",
+                    "name": "角色列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "a87bba8e0be54a1da8af27b427f44c84",
+          "serviceType": "3",
+          "subscriptionCode": "aaaaa"
+        }
+      ],
+      "name": "aaaaa",
+      "pkid": "fdb26e8c910142fba27ea01edb4af3a4",
+      "scheduleConf": "10 m",
+      "scheduleEnable": true,
+      "scheduleType": "2",
+      "updateTime": "2025-02-27 20:24:21",
+      "updateUser": null,
+      "userFullSyncEnable": false
+    },
+    {
+      "code": "atesta",
+      "createTime": "2025-02-24 09:50:23",
+      "createUser": null,
+      "customMappingEnable": true,
+      "detailList": [
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": false,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "account",
+                    "mapping": "account",
+                    "name": "账号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "personnelCode",
+                    "mapping": "personnelCode",
+                    "name": "人员编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "telephone",
+                    "mapping": "telephone",
+                    "name": "手机号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "email",
+                    "mapping": "email",
+                    "name": "邮箱"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  },
+                  {
+                    "isPrimary": true,
+                    "key": "roles",
+                    "mapping": "roles",
+                    "name": "角色编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "userList",
+                    "mapping": "userList",
+                    "name": "用户列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": "http://localhost:6800/api/subscriptionInfo/testNotify"
+              }
+            ]
+          },
+          "pkid": "bb017ad3a67b416a9eb81a7ddba77653",
+          "serviceType": "0",
+          "subscriptionCode": "atesta"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeCode",
+                    "mapping": "typeCode",
+                    "name": "类型编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeName",
+                    "mapping": "typeName",
+                    "name": "类型名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "parentId",
+                    "mapping": "parentId",
+                    "name": "父编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "orgList",
+                    "mapping": "orgList",
+                    "name": "组织列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": "http://localhost:6800/api/subscriptionInfo/testNotify"
+              }
+            ]
+          },
+          "pkid": "1e1159f052f0495d9205e73b15ea528d",
+          "serviceType": "1",
+          "subscriptionCode": "atesta"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "remark",
+                    "mapping": "remark",
+                    "name": "备注"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "postList",
+                    "mapping": "postList",
+                    "name": "岗位列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": "http://localhost:6800/api/subscriptionInfo/testNotify"
+              }
+            ]
+          },
+          "pkid": "98fba83e41fe4152922996df2fd022a5",
+          "serviceType": "2",
+          "subscriptionCode": "atesta"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "roleCode",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "accounts",
+                    "mapping": "accounts",
+                    "name": "账号列表"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "roleList",
+                    "mapping": "roleList",
+                    "name": "角色列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": "http://localhost:6800/api/subscriptionInfo/testNotify"
+              }
+            ]
+          },
+          "pkid": "19b7311411b640378a8d473cbfcaff2e",
+          "serviceType": "3",
+          "subscriptionCode": "atesta"
+        }
+      ],
+      "name": "aaa",
+      "pkid": "e8acb96b173a4dda945cee40b1f456f9",
+      "scheduleConf": "18 */5 * * * ?",
+      "scheduleEnable": true,
+      "scheduleType": "1",
+      "updateTime": "2025-02-27 13:36:18",
+      "updateUser": null,
+      "userFullSyncEnable": false
+    },
+    {
+      "code": "ffffff",
+      "createTime": "2025-02-27 13:37:15",
+      "createUser": null,
+      "customMappingEnable": true,
+      "detailList": [
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": false,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": true,
+                    "key": "account",
+                    "mapping": "account",
+                    "name": "账号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "personnelCode",
+                    "mapping": "personnelCode",
+                    "name": "人员编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "telephone",
+                    "mapping": "telephone",
+                    "name": "手机号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "email",
+                    "mapping": "email",
+                    "name": "邮箱"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "roles",
+                    "mapping": "roles",
+                    "name": "角色编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "userList",
+                    "mapping": "userList",
+                    "name": "用户列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "d28cb7cdb54846cba18b398a553088b5",
+          "serviceType": "0",
+          "subscriptionCode": "ffffff"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeCode",
+                    "mapping": "typeCode",
+                    "name": "类型编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeName",
+                    "mapping": "typeName",
+                    "name": "类型名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "parentId",
+                    "mapping": "parentId",
+                    "name": "父编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "orgList",
+                    "mapping": "orgList",
+                    "name": "组织列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "3da938d56aa34148b758e46bd0c1c248",
+          "serviceType": "1",
+          "subscriptionCode": "ffffff"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "remark",
+                    "mapping": "remark",
+                    "name": "备注"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "postList",
+                    "mapping": "postList",
+                    "name": "岗位列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "3b4510ff2edb46b4957531fbf844d6e5",
+          "serviceType": "2",
+          "subscriptionCode": "ffffff"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "roleCode",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "accounts",
+                    "mapping": "accounts",
+                    "name": "账号列表"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "roleList",
+                    "mapping": "roleList",
+                    "name": "角色列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "a96e1ed71dce4dd5acceeec50c32e74c",
+          "serviceType": "3",
+          "subscriptionCode": "ffffff"
+        }
+      ],
+      "name": "ffffff",
+      "pkid": "1b705c5579ab43bc85d4a126d9af13ca",
+      "scheduleConf": "12 m",
+      "scheduleEnable": true,
+      "scheduleType": "2",
+      "updateTime": "2025-02-27 13:37:15",
+      "updateUser": null,
+      "userFullSyncEnable": false
+    },
+    {
+      "code": "fgsd",
+      "createTime": "2025-02-27 13:39:28",
+      "createUser": null,
+      "customMappingEnable": true,
+      "detailList": [
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": false,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": true,
+                    "key": "account",
+                    "mapping": "account",
+                    "name": "账号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "personnelCode",
+                    "mapping": "personnelCode",
+                    "name": "人员编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "telephone",
+                    "mapping": "telephone",
+                    "name": "手机号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "email",
+                    "mapping": "email",
+                    "name": "邮箱"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "roles",
+                    "mapping": "roles",
+                    "name": "角色编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "userList",
+                    "mapping": "userList",
+                    "name": "用户列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "aa1dcfe4cc2d46faa386cf96270d9f30",
+          "serviceType": "0",
+          "subscriptionCode": "fgsd"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeCode",
+                    "mapping": "typeCode",
+                    "name": "类型编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeName",
+                    "mapping": "typeName",
+                    "name": "类型名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "parentId",
+                    "mapping": "parentId",
+                    "name": "父编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "orgList",
+                    "mapping": "orgList",
+                    "name": "组织列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "1aa3906be0bf4e6e94fbcfa36bb995de",
+          "serviceType": "1",
+          "subscriptionCode": "fgsd"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "remark",
+                    "mapping": "remark",
+                    "name": "备注"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "postList",
+                    "mapping": "postList",
+                    "name": "岗位列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "fc05724d42d44f659819312cca2ba858",
+          "serviceType": "2",
+          "subscriptionCode": "fgsd"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "roleCode",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "accounts",
+                    "mapping": "accounts",
+                    "name": "账号列表"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "roleList",
+                    "mapping": "roleList",
+                    "name": "角色列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "36a5eb113f5348549576dffbdaf45bfc",
+          "serviceType": "3",
+          "subscriptionCode": "fgsd"
+        }
+      ],
+      "name": "gfds",
+      "pkid": "a354cb10f2224afb816a30bdf50aab82",
+      "scheduleConf": "18 */5 * * * ?",
+      "scheduleEnable": true,
+      "scheduleType": "1",
+      "updateTime": "2025-02-27 13:39:28",
+      "updateUser": null,
+      "userFullSyncEnable": false
+    },
+    {
+      "code": "test02261519",
+      "createTime": "2025-02-26 15:19:43",
+      "createUser": null,
+      "customMappingEnable": true,
+      "detailList": [
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": false,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "account",
+                    "mapping": "account",
+                    "name": "账号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "personnelCode",
+                    "mapping": "personnelCode",
+                    "name": "人员编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "telephone",
+                    "mapping": "telephone",
+                    "name": "手机号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "email",
+                    "mapping": "email",
+                    "name": "邮箱"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "roles",
+                    "mapping": "roles",
+                    "name": "角色编号"
+                  }
+                ],
+                "dataPosition": "data.list",
+                "paramMapping": [
+                  {
+                    "key": "userList",
+                    "mapping": "userList",
+                    "name": "用户列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "200"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": "http://1.2.3.4"
+              }
+            ]
+          },
+          "pkid": "0039c8a60fa449a78e1e0d2c01d5dc49",
+          "serviceType": "0",
+          "subscriptionCode": "test02261519"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeCode",
+                    "mapping": "typeCode",
+                    "name": "类型编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "typeName",
+                    "mapping": "typeName",
+                    "name": "类型名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "parentId",
+                    "mapping": "parentId",
+                    "name": "父编号"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "orgList",
+                    "mapping": "orgList",
+                    "name": "组织列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "bed8b8cf2f8d463f95358e41e95bca74",
+          "serviceType": "1",
+          "subscriptionCode": "test02261519"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "code",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "remark",
+                    "mapping": "remark",
+                    "name": "备注"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "createdAt",
+                    "mapping": "createdAt",
+                    "name": "创建时间"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "postList",
+                    "mapping": "postList",
+                    "name": "岗位列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "status",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "b82db78b00414400bb3460072adb90de",
+          "serviceType": "2",
+          "subscriptionCode": "test02261519"
+        },
+        {
+          "configModel": {
+            "body": {
+              "requestConfig": {
+                "dataMapping": [
+                  {
+                    "isPrimary": true,
+                    "key": "id",
+                    "mapping": "id",
+                    "name": "主键"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "code",
+                    "mapping": "roleCode",
+                    "name": "编号"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "name",
+                    "mapping": "name",
+                    "name": "名称"
+                  },
+                  {
+                    "isPrimary": false,
+                    "key": "accounts",
+                    "mapping": "accounts",
+                    "name": "账号列表"
+                  }
+                ],
+                "dataPosition": "",
+                "paramMapping": [
+                  {
+                    "key": "roleList",
+                    "mapping": "roleList",
+                    "name": "角色列表"
+                  }
+                ]
+              },
+              "responseConfig": [
+                {
+                  "key": "status",
+                  "mapping": "code",
+                  "name": "响应状态",
+                  "value": "0"
+                }
+              ]
+            },
+            "headers": {},
+            "urls": [
+              {
+                "method": "POST",
+                "type": "DEFAULT",
+                "url": ""
+              }
+            ]
+          },
+          "pkid": "368092a3dc4d4fa49666ac8411b9dc9a",
+          "serviceType": "3",
+          "subscriptionCode": "test02261519"
+        }
+      ],
+      "name": "testzp",
+      "pkid": "1c5a1bde4cbe44d4b4864f60aa66b5e9",
+      "scheduleConf": "20 m",
+      "scheduleEnable": true,
+      "scheduleType": "2",
+      "updateTime": "2025-02-26 18:23:34",
+      "updateUser": null,
+      "userFullSyncEnable": false
+    }
+  ],
+  "pageNum": 1,
+  "pageSize": 20,
+  "total": 6
+}
