@@ -39,7 +39,7 @@ get_version() {
     # 检查part1的前导零
     if [[ ${#part1} -gt 1 && $part1 =~ ^0 ]]; then
       has_leading_zero1=true
-      # 计算前导零数量 - 使用更准确的方法
+      # 计算前导零数量
       temp1="$part1"
       leading_zeros1=0
       while [[ ${temp1:0:1} == "0" ]]; do
@@ -51,7 +51,7 @@ get_version() {
     # 检查part2的前导零
     if [[ ${#part2} -gt 1 && $part2 =~ ^0 ]]; then
       has_leading_zero2=true
-      # 计算前导零数量 - 使用更准确的方法
+      # 计算前导零数量
       temp2="$part2"
       leading_zeros2=0
       while [[ ${temp2:0:1} == "0" ]]; do
@@ -129,48 +129,90 @@ get_version() {
   echo "$v1"
 }
 
-# 测试函数
-test_get_version() {
-  echo "=== 版本号比较测试 ==="
+# 详细的版本比较函数（返回数值结果）
+compare_versions_detailed() {
+  local v1="$1"
+  local v2="$2"
 
-  # 测试用例：[版本1, 版本2, 期望的最小值, 期望的最大值]
-  test_cases=(
-    "1.2.3 1.2.4 1.2.3 1.2.4"
-    "1.2.3 1.2.03 1.2.03 1.2.3"
-    "1.02.3 1.2.3 1.02.3 1.2.3"
-    "1.002.3 1.02.3 1.002.3 1.02.3"
-    "1.2.3.4 1.2.3 1.2.3 1.2.3.4"
-    "2.0.0 1.9.9 1.9.9 2.0.0"
-    "01.2.3 1.2.3 01.2.3 1.2.3"
-    "1.2.03 1.2.3 1.2.03 1.2.3"
-    "0.0.1 0.0.01 0.0.01 0.0.1"
-    "1.02.3 1.002.3 1.002.3 1.02.3"
-    "1.0.00106 1.0.01 1.0.00106 1.0.01"
-  )
+  # 按点分割版本号
+  IFS='.' read -ra V1 <<<"$v1"
+  IFS='.' read -ra V2 <<<"$v2"
 
-  for case in "${test_cases[@]}"; do
-    read -r v1 v2 expected_min expected_max <<<"$case"
+  # 获取两个版本号的最大段数
+  local max_parts=${#V1[@]}
+  if [ ${#V2[@]} -gt $max_parts ]; then
+    max_parts=${#V2[@]}
+  fi
 
-    actual_min=$(get_version "min" "$v1" "$v2")
-    actual_max=$(get_version "max" "$v1" "$v2")
+  # 逐段比较
+  for ((i = 0; i < max_parts; i++)); do
+    local part1=${V1[i]:-0}
+    local part2=${V2[i]:-0}
 
-    # 检查结果是否符合预期
-    min_status="✓"
-    max_status="✓"
+    # 检查是否有前导零和前导零数量
+    local has_leading_zero1=false
+    local has_leading_zero2=false
+    local leading_zeros1=0
+    local leading_zeros2=0
 
-    if [ "$actual_min" != "$expected_min" ]; then
-      min_status="✗ (期望: $expected_min)"
+    # 检查part1的前导零
+    if [[ ${#part1} -gt 1 && $part1 =~ ^0 ]]; then
+      has_leading_zero1=true
+      temp1="$part1"
+      leading_zeros1=0
+      while [[ ${temp1:0:1} == "0" ]]; do
+        leading_zeros1=$((leading_zeros1 + 1))
+        temp1="${temp1:1}"
+      done
     fi
 
-    if [ "$actual_max" != "$expected_max" ]; then
-      max_status="✗ (期望: $expected_max)"
+    # 检查part2的前导零
+    if [[ ${#part2} -gt 1 && $part2 =~ ^0 ]]; then
+      has_leading_zero2=true
+      temp2="$part2"
+      leading_zeros2=0
+      while [[ ${temp2:0:1} == "0" ]]; do
+        leading_zeros2=$((leading_zeros2 + 1))
+        temp2="${temp2:1}"
+      done
     fi
 
-    echo "测试: $v1 vs $v2"
-    echo "  最小值: $actual_min $min_status"
-    echo "  最大值: $actual_max $max_status"
-    echo ""
+    # 获取数值部分
+    local num1=$((10#$part1))
+    local num2=$((10#$part2))
+
+    # 比较前导零规则（优先级最高）
+    if [ "$has_leading_zero1" = true ] && [ "$has_leading_zero2" = true ]; then
+      if [ $leading_zeros1 -lt $leading_zeros2 ]; then
+        echo 1
+        return
+      elif [ $leading_zeros1 -gt $leading_zeros2 ]; then
+        echo -1
+        return
+      fi
+    fi
+
+    # 有前导零 vs 无前导零的比较
+    if [ "$has_leading_zero1" = true ] && [ "$has_leading_zero2" = false ]; then
+      echo -1
+      return
+    elif [ "$has_leading_zero1" = false ] && [ "$has_leading_zero2" = true ]; then
+      echo 1
+      return
+    fi
+
+    # 最后比较数值大小
+    if [ $num1 -lt $num2 ]; then
+      echo -1
+      return
+    elif [ $num1 -gt $num2 ]; then
+      echo 1
+      return
+    fi
   done
+
+  # 所有段都相等
+  echo 0
 }
 
 # 版本号排序函数
@@ -229,169 +271,11 @@ sort_versions() {
   done
 }
 
-# 详细的版本比较函数（返回数值结果）
-compare_versions_detailed() {
-  local v1="$1"
-  local v2="$2"
-
-  # 按点分割版本号
-  IFS='.' read -ra V1 <<<"$v1"
-  IFS='.' read -ra V2 <<<"$v2"
-
-  # 获取两个版本号的最大段数
-  local max_parts=${#V1[@]}
-  if [ ${#V2[@]} -gt $max_parts ]; then
-    max_parts=${#V2[@]}
-  fi
-
-  # 逐段比较
-  for ((i = 0; i < max_parts; i++)); do
-    local part1=${V1[i]:-0}
-    local part2=${V2[i]:-0}
-
-    # 检查是否有前导零和前导零数量
-    local has_leading_zero1=false
-    local has_leading_zero2=false
-    local leading_zeros1=0
-    local leading_zeros2=0
-
-    # 检查part1的前导零
-    if [[ ${#part1} -gt 1 && $part1 =~ ^0 ]]; then
-      has_leading_zero1=true
-      # 计算前导零数量 - 使用更准确的方法
-      temp1="$part1"
-      leading_zeros1=0
-      while [[ ${temp1:0:1} == "0" ]]; do
-        leading_zeros1=$((leading_zeros1 + 1))
-        temp1="${temp1:1}"
-      done
-    fi
-
-    # 检查part2的前导零
-    if [[ ${#part2} -gt 1 && $part2 =~ ^0 ]]; then
-      has_leading_zero2=true
-      # 计算前导零数量 - 使用更准确的方法
-      temp2="$part2"
-      leading_zeros2=0
-      while [[ ${temp2:0:1} == "0" ]]; do
-        leading_zeros2=$((leading_zeros2 + 1))
-        temp2="${temp2:1}"
-      done
-    fi
-
-    # 获取数值部分
-    local num1=$((10#$part1))
-    local num2=$((10#$part2))
-
-    # 比较前导零规则（优先级最高）
-    # 如果都有前导零，前导零数量少的版本大
-    if [ "$has_leading_zero1" = true ] && [ "$has_leading_zero2" = true ]; then
-      if [ $leading_zeros1 -lt $leading_zeros2 ]; then
-        # v1的前导零少 => v1 > v2
-        echo 1
-        return
-      elif [ $leading_zeros1 -gt $leading_zeros2 ]; then
-        # v1的前导零多 => v1 < v2
-        echo -1
-        return
-      fi
-      # 前导零数量相等，继续比较数值
-    fi
-
-    # 有前导零 vs 无前导零的比较
-    if [ "$has_leading_zero1" = true ] && [ "$has_leading_zero2" = false ]; then
-      # v1有前导零，v2没有 => v1 < v2
-      echo -1
-      return
-    elif [ "$has_leading_zero1" = false ] && [ "$has_leading_zero2" = true ]; then
-      # v1没有前导零，v2有 => v1 > v2
-      echo 1
-      return
-    fi
-
-    # 最后比较数值大小（都没有前导零，或前导零数量相等时）
-    if [ $num1 -lt $num2 ]; then
-      # v1 < v2
-      echo -1
-      return
-    elif [ $num1 -gt $num2 ]; then
-      # v1 > v2
-      echo 1
-      return
-    fi
-  done
-
-  # 所有段都相等
-  echo 0
-}
-
-# 从标准输入读取版本号列表并排序
-sort_versions_from_stdin() {
-  local order="$1"
-  local versions=()
-
-  if [ -z "$order" ]; then
-    echo "错误: 需要指定排序方式 (asc/desc)"
-    return 1
-  fi
-
-  # 读取标准输入
-  while IFS= read -r line; do
-    if [ -n "$line" ]; then
-      versions+=("$line")
-    fi
-  done
-
-  if [ ${#versions[@]} -eq 0 ]; then
-    echo "错误: 没有从标准输入读取到版本号"
-    return 1
-  fi
-
-  sort_versions "$order" "${versions[@]}"
-}
-
-# 使用示例和帮助信息
-show_usage() {
-  echo "版本号比较和排序工具"
-  echo ""
-  echo "用法:"
-  echo "  $0 min|max version1 version2                    # 比较两个版本号"
-  echo "  $0 sort asc|desc version1 version2 ...         # 排序多个版本号"
-  echo "  $0 sort-stdin asc|desc                          # 从标准输入排序"
-  echo "  $0 sql-files directory [asc|desc] [pattern]     # 获取SQL文件并按版本排序"
-  echo "  $0 sql-info directory [asc|desc] [pattern]      # 显示SQL文件详细信息"
-  echo "  $0 extract-version filename                     # 从文件名提取版本号"
-  echo "  $0 test                                         # 运行测试"
-  echo "  $0 help                                         # 显示帮助"
-  echo ""
-  echo "示例:"
-  echo "  $0 max 1.2.3 1.2.03                            # 输出: 1.2.3"
-  echo "  $0 sort asc 1.02.3 1.2.3 1.002.4               # 按升序排列"
-  echo "  $0 sql-files ./migrations desc                  # 获取migration目录中SQL文件，降序排列"
-  echo "  $0 sql-files ./sql asc '*.sql'                  # 指定文件模式"
-  echo "  $0 sql-info ./updates                           # 显示SQL文件详细信息"
-  echo "  $0 extract-version 'update_v1.2.3.sql'         # 输出: 1.2.3"
-  echo ""
-  echo "SQL文件版本号识别模式:"
-  echo "  - v1.2.3, V1.2.3"
-  echo "  - version_1.2.3, version-1.2.3"
-  echo "  - update_v1.2.3, update-1.2.3"
-  echo "  - 1.2.3 (直接包含版本号)"
-  echo "  - migration_1.02.4.sql"
-  echo "  - V1.0.01_create_table.sql"
-  echo ""
-  echo "版本号比较规则:"
-  echo "  1. 前导零数量少的版本更大"
-  echo "  2. 有前导零的版本小于无前导零的版本"
-  echo "  3. 数值大小比较（最低优先级）"
-}
-
 # 从文件名中提取版本号的函数
 extract_version_from_filename() {
   local filename="$1"
 
   # 支持多种版本号格式的正则表达式
-  # 匹配: v1.2.3, V1.2.3, 1.2.3, version_1.2.3, update_v1.2.3.sql 等
   local version=""
 
   # 尝试不同的版本号模式
@@ -429,83 +313,50 @@ get_sql_files_by_version() {
     return 1
   fi
 
-  # 存储文件信息的数组 (格式: "版本号|完整路径")
-  local file_entries=()
+  # 存储带版本号的文件
+  local version_files=()
+  local versions=()
 
-  # 遍历目录中的文件
+  # 使用关联数组存储版本号到文件路径的映射
+  declare -A version_to_file
+
+  # 遍历目录中的文件（包括子目录）
   while IFS= read -r -d '' file; do
     local basename=$(basename "$file")
     local version=$(extract_version_from_filename "$basename")
 
     if [ -n "$version" ]; then
-      file_entries+=("$version|$file")
+      # 如果版本号已存在，跳过重复
+      if [[ -z "${version_to_file[$version]}" ]]; then
+        versions+=("$version")
+        version_to_file["$version"]="$file"
+      fi
     fi
   done < <(find "$directory" -name "$pattern" -type f -print0)
 
-  if [ ${#file_entries[@]} -eq 0 ]; then
-    echo "在目录 '$directory' 中没有找到带版本号的文件（模式: $pattern）"
+  if [ ${#versions[@]} -eq 0 ]; then
+    echo "在目录 '$directory' 中没有找到带版本号的文件（模式: $pattern）" >&2
     return 1
   fi
 
-  # 提取版本号进行排序
-  local versions=()
-  local version_to_file=()
-
-  for entry in "${file_entries[@]}"; do
-    local version="${entry%%|*}"
-    local filepath="${entry##*|}"
-    versions+=("$version")
-    version_to_file["$version"]="$filepath"
-  done
-
   # 对版本号进行排序
   local sorted_versions
-  readarray -t sorted_versions < <(printf '%s\n' "${versions[@]}" | while read -r v; do echo "$v"; done | {
-    local temp_versions=("${versions[@]}")
-    local n=${#temp_versions[@]}
-
-    for ((i = 0; i < n; i++)); do
-      for ((j = 0; j < n - i - 1; j++)); do
-        local v1="${temp_versions[j]}"
-        local v2="${temp_versions[j + 1]}"
-
-        local comparison_result=$(compare_versions_detailed "$v1" "$v2")
-
-        local should_swap=false
-        if [ "$order" = "asc" ] && [ $comparison_result -gt 0 ]; then
-          should_swap=true
-        elif [ "$order" = "desc" ] && [ $comparison_result -lt 0 ]; then
-          should_swap=true
-        fi
-
-        if [ "$should_swap" = true ]; then
-          local temp="${temp_versions[j]}"
-          temp_versions[j]="${temp_versions[j + 1]}"
-          temp_versions[j + 1]="$temp"
-        fi
+  readarray -t sorted_versions < <(
+    # 将版本号数组传递给排序函数
+    printf '%s\n' "${versions[@]}" | {
+      local temp_array=()
+      while IFS= read -r line; do
+        temp_array+=("$line")
       done
-    done
 
-    for version in "${temp_versions[@]}"; do
-      echo "$version"
-    done
-  })
+      # 调用现有的排序函数
+      sort_versions "$order" "${temp_array[@]}"
+    }
+  )
 
-  # 去除重复版本号并输出排序后的文件路径
-  local seen_versions=()
+  # 输出排序后的文件路径
   for version in "${sorted_versions[@]}"; do
-    local already_seen=false
-    for seen in "${seen_versions[@]}"; do
-      if [ "$seen" = "$version" ]; then
-        already_seen=true
-        break
-      fi
-    done
-
-    if [ "$already_seen" = false ]; then
-      seen_versions+=("$version")
-      echo "${version_to_file[$version]}"
-    fi
+    echo "${version_to_file[$version]}"
   done
 }
 
@@ -562,42 +413,114 @@ show_sql_files_info() {
   done
 }
 
-# 排序测试函数
-test_sort_versions() {
-  echo "=== 版本号排序测试 ==="
+# 从标准输入读取版本号列表并排序
+sort_versions_from_stdin() {
+  local order="$1"
+  local versions=()
 
-  local test_versions=("1.2.3" "1.02.1" "1.0.01" "2.0.0" "1.2.03" "1.002.4" "1.10.0" "1.2.10")
+  if [ -z "$order" ]; then
+    echo "错误: 需要指定排序方式 (asc/desc)"
+    return 1
+  fi
 
-  echo "原始版本列表:"
-  for v in "${test_versions[@]}"; do
-    echo "  $v"
+  # 读取标准输入
+  while IFS= read -r line; do
+    if [ -n "$line" ]; then
+      versions+=("$line")
+    fi
   done
 
-  echo ""
-  echo "升序排序结果:"
-  sort_versions "asc" "${test_versions[@]}"
+  if [ ${#versions[@]} -eq 0 ]; then
+    echo "错误: 没有从标准输入读取到版本号"
+    return 1
+  fi
 
-  echo ""
-  echo "降序排序结果:"
-  sort_versions "desc" "${test_versions[@]}"
-
-  echo ""
+  sort_versions "$order" "${versions[@]}"
 }
 
-# 测试SQL文件功能
-test_sql_files() {
-  echo "=== SQL文件功能测试 ==="
+# 测试函数
+test_get_version() {
+  echo "=== 版本号比较测试 ==="
 
-  # 测试版本号提取
-  local test_filenames=("update_v1.2.3.sql" "migration_1.02.4.sql" "V1.0.01_create_table.sql" "schema_version_2.1.0.sql" "1.10.5_data_fix.sql")
+  # 测试用例：[版本1, 版本2, 期望的最小值, 期望的最大值]
+  test_cases=(
+    "1.2.3 1.2.4 1.2.3 1.2.4"
+    "1.2.3 1.2.03 1.2.03 1.2.3"
+    "1.02.3 1.2.3 1.02.3 1.2.3"
+    "1.002.3 1.02.3 1.002.3 1.02.3"
+    "1.2.3.4 1.2.3 1.2.3 1.2.3.4"
+    "2.0.0 1.9.9 1.9.9 2.0.0"
+    "01.2.3 1.2.3 01.2.3 1.2.3"
+    "1.2.03 1.2.3 1.2.03 1.2.3"
+    "0.0.1 0.0.01 0.0.01 0.0.1"
+    "1.02.3 1.002.3 1.002.3 1.02.3"
+    "1.0.00106 1.0.01 1.0.00106 1.0.01"
+  )
 
-  echo "版本号提取测试:"
-  for filename in "${test_filenames[@]}"; do
-    local version=$(extract_version_from_filename "$filename")
-    printf "  %-30s -> %s\n" "$filename" "$version"
+  for case in "${test_cases[@]}"; do
+    read -r v1 v2 expected_min expected_max <<<"$case"
+
+    actual_min=$(get_version "min" "$v1" "$v2")
+    actual_max=$(get_version "max" "$v1" "$v2")
+
+    # 检查结果是否符合预期
+    min_status="✓"
+    max_status="✓"
+
+    if [ "$actual_min" != "$expected_min" ]; then
+      min_status="✗ (期望: $expected_min)"
+    fi
+
+    if [ "$actual_max" != "$expected_max" ]; then
+      max_status="✗ (期望: $expected_max)"
+    fi
+
+    echo "测试: $v1 vs $v2"
+    echo "  最小值: $actual_min $min_status"
+    echo "  最大值: $actual_max $max_status"
+    echo ""
   done
+}
 
+# 使用示例和帮助信息
+show_usage() {
+  echo "版本号比较和排序工具"
   echo ""
+  echo "用法:"
+  echo "  $0 min|max version1 version2                    # 比较两个版本号"
+  echo "  $0 sort asc|desc version1 version2 ...         # 排序多个版本号"
+  echo "  $0 sort-stdin asc|desc                          # 从标准输入排序"
+  echo "  $0 sql-files directory [asc|desc] [pattern]     # 获取SQL文件并按版本排序"
+  echo "  $0 sql-info directory [asc|desc] [pattern]      # 显示SQL文件详细信息"
+  echo "  $0 extract-version filename                     # 从文件名提取版本号"
+  echo "  $0 test                                         # 运行测试"
+  echo "  $0 help                                         # 显示帮助"
+  echo ""
+  echo "示例:"
+  echo "  $0 max 1.2.3 1.2.03                            # 输出: 1.2.3"
+  echo "  $0 sort asc 1.02.3 1.2.3 1.002.4               # 按升序排列"
+  echo "  $0 sql-files ./migrations desc                  # 获取migration目录中SQL文件，降序排列"
+  echo "  $0 sql-files ./sql asc '*.sql'                  # 指定文件模式"
+  echo "  $0 sql-info ./updates                           # 显示SQL文件详细信息"
+  echo "  $0 extract-version 'update_v1.2.3.sql'         # 输出: 1.2.3"
+  echo ""
+  echo "SQL文件版本号识别模式:"
+  echo "  - v1.2.3, V1.2.3"
+  echo "  - version_1.2.3, version-1.2.3"
+  echo "  - update_v1.2.3, update-1.2.3"
+  echo "  - 1.2.3 (直接包含版本号)"
+  echo "  - migration_1.02.4.sql"
+  echo "  - V1.0.01_create_table.sql"
+  echo ""
+  echo "版本号比较规则:"
+  echo "  1. 前导零数量少的版本更大"
+  echo "  2. 有前导零的版本小于无前导零的版本"
+  echo "  3. 数值大小比较（最低优先级）"
+  echo ""
+  echo "注意事项:"
+  echo "  - sql-files 会递归搜索指定目录及其子目录"
+  echo "  - 不包含版本号的文件会被忽略"
+  echo "  - 相同版本号的文件只会显示第一个找到的"
 }
 
 # 主程序入口
@@ -646,8 +569,6 @@ case "${1:-}" in
   ;;
 "test")
   test_get_version
-  test_sort_versions
-  test_sql_files
   ;;
 "help" | "-h" | "--help")
   show_usage
@@ -655,8 +576,6 @@ case "${1:-}" in
 "")
   # 默认运行测试
   test_get_version
-  test_sort_versions
-  test_sql_files
   ;;
 *)
   echo "错误: 未知命令 '$1'"
