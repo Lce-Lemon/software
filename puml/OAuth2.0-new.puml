@@ -1,0 +1,38 @@
+@startuml
+
+actor 用户 as User
+participant 浏览器 as Browser
+participant 应用1 as ThirdApp
+'participant 单点登录前端 as SSOWeb
+participant SSO认证中心 as SSOSvc
+
+group OAuth2.0流程
+User -> Browser :
+Browser -> ThirdApp : 访问应用1
+ThirdApp --> ThirdApp : 验证未登录
+ThirdApp -> SSOSvc : 跳转\nhttp://ip:8790/authorize?client_id=xxx&redirect_uri=REDIRECT_URL\n&response_type=code&scope=openid profile api&state=aaa
+SSOSvc --> SSOSvc : 验证未登录
+SSOSvc --> Browser : 登录页面?redirect_uri=/auth/authorize?client_id=xxx&redirect_uri=REDIRECT_URL\n&response_type=code&scope=user&state=aaa
+'SSOWeb -> SSOSvc : 携带cookie判定是否登录
+Browser --> User : 登录页面
+User -> Browser : 输入用户名密码登录
+Browser -> SSOSvc : 携带用户名密码验证
+SSOSvc --> SSOSvc : 验证成功
+SSOSvc --> SSOSvc : 设置cookie
+SSOSvc --> SSOSvc : 创建access_token
+SSOSvc --> SSOSvc : 生成code
+'SSOSvc --> SSOWeb : 返回code信息
+'SSOWeb -> SSOSvc : 跳转“/auth/location?account=xxx&code=aaa&url=REDIRECT_URL”
+SSOSvc --> ThirdApp : 重定向“REDIRECT_URL?code=xxx&state=xxx”
+ThirdApp -> SSOSvc : 获取access_token\n“/auth/token?code=xxx&client_id=xxx&grant_type=authorization_code\n&redirect_uri=REDIRECT_URL”
+SSOSvc --> SSOSvc : 根据code换取access_token等
+SSOSvc --> ThirdApp : 返回access_token等信息
+'ThirdApp -> SSOSvc : 携带access_token访问接口
+'SSOSvc --> SSOSvc : 验证成功
+'SSOSvc --> ThirdApp : 返回相应信息
+ThirdApp --> User : 正常访问
+end
+
+
+
+@enduml
