@@ -1,11 +1,128 @@
 @startuml
-'https://plantuml.com/sequence-diagram
+
+!theme sunlust
+'autoactivate on
+
+actor 用户 as User
+participant 浏览器 as Browser
+participant 应用1 as ThirdApp
+participant 应用2 as ThirdApp2
+participant "XBase认证中心" as XbaseSvc
+participant "三方认证中心" as SSOSvc
 
 autonumber
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+'== 双重角色工作流程 ==
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+alt 未单点登录
+  User -> Browser : 访问应用1
+  activate Browser
+  Browser -> ThirdApp : 请求资源
+  activate ThirdApp
+  ThirdApp -> ThirdApp : 检查本地会话(无)
+  ThirdApp -> Browser : 重定向到XBase登录\n(携带应用1回调地址)
+  deactivate ThirdApp
+  Browser -> XbaseSvc : 转发登录请求
+  activate XbaseSvc
+  XbaseSvc -> XbaseSvc : 检查本地会话(无)
+  alt 未配置三方认证中心
+    XbaseSvc -> Browser : 显示登录页面
+    User -> XbaseSvc : 输入凭证
+    XbaseSvc -> XbaseSvc : 验证凭证
+    XbaseSvc -> XbaseSvc : 设置cookie
+
+  else 已配置三方认证中心
+    autonumber 7
+    XbaseSvc -> Browser : 重定向到三方认证中心\n(携带XBase回调地址)
+    deactivate XbaseSvc
+    Browser -> SSOSvc : 显示登录页面
+    activate SSOSvc
+    User -> SSOSvc : 输入凭证
+    SSOSvc -> SSOSvc : 验证凭证
+    SSOSvc -> XbaseSvc : 重定向回XBase\n(携带code)
+    activate XbaseSvc
+    XbaseSvc -> SSOSvc : 获取access_token\n(使用code)
+    SSOSvc -> SSOSvc : 根据code生成access_token
+    SSOSvc -> XbaseSvc : 返回access_token等信息
+    deactivate SSOSvc
+    XbaseSvc -> XbaseSvc : 创建本地SSO会话
+  end
+
+  XbaseSvc -> ThirdApp : 重定向回应用1\n(携带code)
+  activate ThirdApp
+  ThirdApp -> XbaseSvc : 获取access_token\n(使用code)
+  XbaseSvc -> XbaseSvc : 根据code生成access_token
+  XbaseSvc -> ThirdApp : 返回access_token等信息
+  deactivate XbaseSvc
+  ThirdApp -> Browser : 显示应用1内容
+  deactivate ThirdApp
+
+'
+'group XBase认证中心作为服务端提供认证
+'  XbaseSvc -> Browser : 重定向回应用1\n(携带SSO令牌)
+'  Browser -> ThirdApp : 传递SSO令牌
+'
+'  ThirdApp -> XbaseSvc : 请求验证SSO令牌
+'  XbaseSvc -> XbaseSvc : 验证本地会话
+'  XbaseSvc --> ThirdApp : 返回用户身份信息
+'
+'  ThirdApp -> Browser : 显示授权资源
+'  Browser -> User : 显示应用1内容
+'end
+
+autonumber
+'== 单点登录其他应用 ==
+
+else 已单点登录
+  User -> Browser : 访问应用2
+  Browser -> ThirdApp2 : 请求资源
+  activate ThirdApp2
+  ThirdApp2 -> Browser : 重定向到SSO登录
+
+  Browser -> XbaseSvc : 传递登录请求
+  activate XbaseSvc
+
+  alt 未配置三方认证中心
+    XbaseSvc -> XbaseSvc : 检测有效会话
+
+  else 已配置三方认证中心且已生成XBase会话
+    autonumber 5
+    XbaseSvc -> XbaseSvc : 检测有效会话
+
+  else 已配置三方认证中心但未生成XBase会话
+    autonumber 5
+    XbaseSvc -> SSOSvc : 重定向到三方认证中心\n(携带XBase回调地址)
+    activate SSOSvc
+    SSOSvc -> SSOSvc : 检测有效会话
+    SSOSvc -> XbaseSvc : 重定向回XBase\n(携带code)
+    XbaseSvc -> SSOSvc : 获取access_token\n(使用code)
+    SSOSvc -> SSOSvc : 根据code生成access_token
+    SSOSvc -> XbaseSvc : 返回access_token等信息
+    deactivate SSOSvc
+    XbaseSvc -> XbaseSvc : 创建本地SSO会话
+  end
+
+  XbaseSvc -> ThirdApp2 : 重定向回应用2\n(携带code)
+  ThirdApp2 -> XbaseSvc : 获取access_token\n(使用code)
+  XbaseSvc -> XbaseSvc : 根据code生成access_token
+  XbaseSvc -> ThirdApp2 : 返回access_token等信息
+  deactivate XbaseSvc
+  ThirdApp2 -> Browser : 显示应用2内容
+  deactivate ThirdApp2
+'
+'
+'  Browser -> ThirdApp2 : 传递SSO令牌
+'  ThirdApp2 -> XbaseSvc : 验证令牌
+'  XbaseSvc --> ThirdApp2 : 返回用户信息
+'  ThirdApp2 -> Browser : 显示应用2资源
+end
+
+'note over XbaseSvc #LightYellow
+'  <b>双重角色实现：</b>
+'  1. 对XBase：作为OAuth客户端
+'  2. 对ThirdApp：作为OIDC服务端
+'  3. 统一管理本地SSO会话
+'  4. 自动转换身份提供者
+'end note
+
 @enduml
