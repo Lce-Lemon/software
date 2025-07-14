@@ -1,0 +1,160 @@
+// 优化后的代码
+public String buildRequestBody() {
+    JSONObject requestBodyObj = new JSONObject();
+
+    // 1. 构建嵌套结构
+    JSONObject targetContainer = buildNestedStructure(requestBodyObj);
+
+    // 2. 填充数据
+    populateRequestData(targetContainer);
+
+    return JSON.toJSONString(requestBodyObj, SystemGlobalConfig.FASTJSON_DEFAULT_WRITER_FEATURES);
+}
+
+/**
+ * 构建嵌套的JSON结构
+ */
+private JSONObject buildNestedStructure(JSONObject root) {
+    if (!customMappingEnable || StringUtils.isBlank(dataPosition)) {
+        return root;
+    }
+
+    String[] keys = dataPosition.split("\\.");
+    JSONObject current = root;
+
+    for (String key : keys) {
+        current = current.computeIfAbsent(key, k -> new JSONObject());
+    }
+
+    return current;
+}
+
+/**
+ * 填充请求数据
+ */
+private void populateRequestData(JSONObject container) {
+    // 处理删除事件的特殊逻辑
+    if (noticeEventEnum.equals(SubscriptionDetailConstant.NoticeEventEnum.DELETE)) {
+        handleDeleteEvent(container);
+        return;
+    }
+
+    // 处理常规数据映射
+    handleDataMapping(container);
+
+    // 处理选项映射
+    handleOptionMapping(container);
+}
+
+/**
+ * 处理删除事件
+ */
+private void handleDeleteEvent(JSONObject container) {
+    List<Object> primaryList = getPrimaryKeyList();
+
+    if (shouldUseDirectMapping()) {
+        // 直接映射到容器
+        Object dataValue = isBatch ? primaryList : primaryList.get(0);
+        if (StringUtils.isBlank(delMappingKey)) {
+            // 这里需要特殊处理，因为要替换整个容器的内容
+            // 可能需要重新设计数据结构
+            replaceContainerContent(container, dataValue);
+        } else {
+            container.put(delMappingKey, dataValue);
+        }
+    } else {
+        // 通过参数映射处理
+        for (SubscriptionDetailConfigModel.BaseMapping mapping : paramMapping) {
+            if (DATA_KEYS.contains(mapping.getKey())) {
+                Object dataValue = isBatch ? primaryList : primaryList.get(0);
+                if (StringUtils.isBlank(delMappingKey)) {
+                    replaceContainerContent(container, dataValue);
+                } else {
+                    container.put(delMappingKey, dataValue);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 处理数据映射
+ */
+private void handleDataMapping(JSONObject container) {
+    for (SubscriptionDetailConfigModel.BaseMapping mapping : paramMapping) {
+        if (DATA_KEYS.contains(mapping.getKey())) {
+            Object dataValue = isBatch ? transformDataList : transformDataList.get(0);
+            String mappingKey = customMappingEnable ? mapping.getMapping() : mapping.getKey();
+
+            if (StringUtils.isBlank(mapping.getMapping())) {
+                replaceContainerContent(container, dataValue);
+            } else {
+                container.put(mappingKey, dataValue);
+            }
+        }
+    }
+}
+
+/**
+ * 处理选项映射
+ */
+private void handleOptionMapping(JSONObject container) {
+    if (shouldSkipOptionMapping()) {
+        return;
+    }
+
+    for (SubscriptionDetailConfigModel.BaseMapping mapping : paramMapping) {
+        if (OPTION.equals(mapping.getKey())) {
+            String mappingKey = customMappingEnable ? mapping.getMapping() : mapping.getKey();
+            container.put(mappingKey, noticeEventEnum.key());
+        }
+    }
+}
+
+/**
+ * 获取主键列表
+ */
+private List<Object> getPrimaryKeyList() {
+    String primaryKey = dataMapping.stream()
+        .filter(SubscriptionDetailConfigModel.DataMapping::getIsPrimary)
+        .findFirst()
+        .orElseThrow(() -> new CustomException("未找到唯一键"))
+        .getMapping();
+
+    return transformDataList.stream()
+        .map(item -> item.get(primaryKey))
+        .collect(Collectors.toList());
+}
+
+/**
+ * 判断是否应该使用直接映射
+ */
+private boolean shouldUseDirectMapping() {
+    return customMappingEnable &&
+           StringUtils.isNotBlank(dataPosition) &&
+           !noticeEventEnum.equals(SubscriptionDetailConstant.NoticeEventEnum.SCHEDULED_TASK) &&
+           configModel.getUrls().size() == MAX_URL_LENGTH;
+}
+
+/**
+ * 判断是否应该跳过选项映射
+ */
+private boolean shouldSkipOptionMapping() {
+    return configModel.getUrls().size() == MAX_URL_LENGTH ||
+           noticeEventEnum.equals(SubscriptionDetailConstant.NoticeEventEnum.SCHEDULED_TASK);
+}
+
+/**
+ * 替换容器内容（需要根据实际需求实现）
+ */
+private void replaceContainerContent(JSONObject container, Object newContent) {
+    // 这里需要根据具体业务逻辑实现
+    // 可能需要清空容器并设置新内容，或者返回新的结构
+    container.clear();
+    if (newContent instanceof JSONObject) {
+        container.putAll((JSONObject) newContent);
+    } else {
+        // 处理非JSONObject的情况
+        throw new UnsupportedOperationException("需要重新设计数据结构以支持非JSONObject类型");
+    }
+}
