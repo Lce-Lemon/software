@@ -1,4 +1,19 @@
- // 数据位置
+private static String getHttpReq(SubscriptionDetailModel detailModel, SubscriptionDetailConstant.NoticeEventEnum noticeEventEnum, SubscriptionDetailConfigModel configModel, List<Map<String, Object>> transformDataList, SubscriptionDetailConfigModel.UrlModel urlInfo) {
+        SubscriptionDetailConfigModel.BodyModel bodyModel = configModel.getBody();
+        SubscriptionDetailConfigModel.RequestConfig requestConfig = bodyModel.getRequestConfig();
+        List<SubscriptionDetailConfigModel.BaseMapping> paramMapping = requestConfig.getParamMapping();
+        List<SubscriptionDetailConfigModel.DataMapping> dataMapping = requestConfig.getDataMapping();
+        Boolean customMappingEnable = detailModel.getCustomMappingEnable();
+
+        // 是否批量接口
+        Boolean isBatch = urlInfo.getIsBatch();
+
+        // 删除标识key
+        String delMappingKey = customMappingEnable ? paramMapping.stream().filter(item -> DELETE_KEY.equals(item.getKey())).map(SubscriptionDetailConfigModel.BaseMapping::getMapping).findFirst().orElse(DELETE_KEY) : DELETE_KEY;
+
+        // 判断是否是put或post接口
+        if (HTTP_METHOD_IS_POST_PUT_PATCH.test(urlInfo.getMethod())) {
+            // 数据位置
             String dataPosition = requestConfig.getDataPosition();
 
             JSONObject requestBodyObj = new JSONObject();
@@ -63,3 +78,9 @@
             }
 
             return JSON.toJSONString(requestBodyObj, SystemGlobalConfig.FASTJSON_DEFAULT_WRITER_FEATURES);
+        }
+
+        // 唯一键
+        String primaryKey = dataMapping.stream().filter(SubscriptionDetailConfigModel.DataMapping::getIsPrimary).findFirst().orElseThrow(() -> new CustomException("未找到唯一键")).getMapping();
+        return transformDataList.stream().map(item -> delMappingKey + "=" + item.get(primaryKey)).collect(Collectors.joining("&"));
+    }
