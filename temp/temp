@@ -1,0 +1,65 @@
+ // 数据位置
+            String dataPosition = requestConfig.getDataPosition();
+
+            JSONObject requestBodyObj = new JSONObject();
+            Object current = requestBodyObj;
+            if (customMappingEnable && StringUtils.isNotBlank(dataPosition)) {
+                String[] keys = dataPosition.split("\\.");
+                for (int i = 0; i < keys.length; i++) {
+                    String key = keys[i];
+                    int finalI = i;
+                    current = ((JSONObject) current).computeIfAbsent(key, k -> {
+                        if (!noticeEventEnum.equals(SubscriptionDetailConstant.NoticeEventEnum.SCHEDULED_TASK)
+                                && finalI == keys.length - 1
+                                && configModel.getUrls().size() == MAX_URL_LENGTH) {
+
+                            // 删除单独处理
+                            if (noticeEventEnum.equals(SubscriptionDetailConstant.NoticeEventEnum.DELETE)) {
+                                // 唯一键
+                                String primaryKey = dataMapping.stream().filter(SubscriptionDetailConfigModel.DataMapping::getIsPrimary).findFirst().orElseThrow(() -> new CustomException("未找到唯一键")).getMapping();
+                                List<Object> primaryList = transformDataList.stream().map(item -> item.get(primaryKey)).collect(Collectors.toList());
+
+                                if (StringUtils.isBlank(delMappingKey)) {
+                                    return isBatch ? primaryList : primaryList.get(0);
+                                }
+                                return isBatch ? JSONObject.of(delMappingKey, primaryList) : JSONObject.of(delMappingKey, primaryList.get(0));
+                            }
+
+                            return isBatch ? transformDataList : transformDataList.get(0);
+                        }
+                        return new JSONObject();
+                    });
+                }
+            }
+
+            // 请求体数据列表映射
+            if (current instanceof JSONObject && ((JSONObject) current).isEmpty()) {
+                for (SubscriptionDetailConfigModel.BaseMapping mapping : paramMapping) {
+                    if (DATA_KEYS.contains(mapping.getKey())) {
+                        if (noticeEventEnum.equals(SubscriptionDetailConstant.NoticeEventEnum.DELETE)) {
+                            // 唯一键
+                            String primaryKey = dataMapping.stream().filter(SubscriptionDetailConfigModel.DataMapping::getIsPrimary).findFirst().orElseThrow(() -> new CustomException("未找到唯一键")).getMapping();
+                            List<Object> primaryList = transformDataList.stream().map(item -> item.get(primaryKey)).collect(Collectors.toList());
+
+                            if (StringUtils.isBlank(delMappingKey)) {
+                                current = isBatch ? primaryList : primaryList.get(0);
+                                continue;
+                            }
+                            ((JSONObject) current).put(delMappingKey, isBatch ? primaryList : primaryList.get(0));
+                        } else {
+                            if (StringUtils.isBlank(mapping.getMapping())) {
+                                current = isBatch ? transformDataList : transformDataList.get(0);
+                                continue;
+                            }
+                            ((JSONObject) current).put(customMappingEnable ? mapping.getMapping() : mapping.getKey(), isBatch ? transformDataList : transformDataList.get(0));
+                        }
+                    }
+                    if (configModel.getUrls().size() != MAX_URL_LENGTH
+                            && !noticeEventEnum.equals(SubscriptionDetailConstant.NoticeEventEnum.SCHEDULED_TASK)
+                            && OPTION.equals(mapping.getKey())) {
+                        ((JSONObject) current).put(customMappingEnable ? mapping.getMapping() : mapping.getKey(), noticeEventEnum.key());
+                    }
+                }
+            }
+
+            return JSON.toJSONString(requestBodyObj, SystemGlobalConfig.FASTJSON_DEFAULT_WRITER_FEATURES);
