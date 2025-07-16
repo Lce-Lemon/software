@@ -1,4 +1,4 @@
-// 1. WebSocket配置类
+// 1. WebSocket配置类 (适用于Undertow)
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
@@ -9,18 +9,19 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocketHandler, "/websocket")
-                .setAllowedOrigins("*"); // 生产环境建议设置具体的域名
+                .setAllowedOrigins("*") // 生产环境建议设置具体的域名
+                .withSockJS(); // 可选：启用SockJS支持
     }
 }
 
-// 2. WebSocket处理器
+// 2. WebSocket处理器 (Undertow兼容版本)
 @Component
 @Slf4j
 public class MyWebSocketHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final Map<String, Long> lastPongTime = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     // 心跳检查间隔（秒）
     private static final int HEARTBEAT_INTERVAL = 30;
@@ -94,15 +95,33 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     }
 
     /**
-     * 发送消息
+     * 发送消息（线程安全）
      */
     private void sendMessage(WebSocketSession session, String message) {
         try {
-            if (session.isOpen()) {
-                session.sendMessage(new TextMessage(message));
+            synchronized (session) {
+                if (session.isOpen()) {
+                    session.sendMessage(new TextMessage(message));
+                }
             }
         } catch (Exception e) {
-            log.error("发送消息失败", e);
+            log.error("发送消息失败，sessionId: {}", session.getId(), e);
+        }
+    }
+
+    /**
+     * 发送ping消息（Undertow兼容）
+     */
+    private void sendPing(WebSocketSession session) {
+        try {
+            synchronized (session) {
+                if (session.isOpen()) {
+                    // 对于Undertow，使用文本消息发送ping
+                    session.sendMessage(new TextMessage("ping"));
+                }
+            }
+        } catch (Exception e) {
+            log.error("发送ping消息失败，sessionId: {}", session.getId(), e);
         }
     }
 
@@ -110,7 +129,9 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
      * 广播消息到所有连接
      */
     public void broadcast(String message) {
-        sessions.values().forEach(session -> sendMessage(session, message));
+        sessions.values().parallelStream().forEach(session -> {
+            sendMessage(session, message);
+        });
     }
 
     /**
@@ -121,6 +142,20 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         if (session != null) {
             sendMessage(session, message);
         }
+    }
+
+    /**
+     * 获取当前连接数
+     */
+    public int getConnectionCount() {
+        return sessions.size();
+    }
+
+    /**
+     * 获取所有会话ID
+     */
+    public Set<String> getSessionIds() {
+        return new HashSet<>(sessions.keySet());
     }
 
     /**
@@ -146,8 +181,11 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     private void checkHeartbeat() {
         long currentTime = System.currentTimeMillis();
 
-        // 检查所有会话的最后活跃时间
-        sessions.entrySet().removeIf(entry -> {
+        // 使用迭代器安全地移除过期会话
+        Iterator<Map.Entry<String, WebSocketSession>> iterator = sessions.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, WebSocketSession> entry = iterator.next();
             String sessionId = entry.getKey();
             WebSocketSession session = entry.getValue();
             Long lastPong = lastPongTime.get(sessionId);
@@ -161,30 +199,43 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
                 } catch (Exception e) {
                     log.error("关闭超时连接失败", e);
                 }
+                iterator.remove();
                 lastPongTime.remove(sessionId);
-                return true;
-            }
-
-            // 发送ping消息
-            try {
+            } else {
+                // 发送ping消息
                 if (session.isOpen()) {
-                    session.sendMessage(new PingMessage());
+                    sendPing(session);
                 }
-            } catch (Exception e) {
-                log.error("发送ping消息失败", e);
             }
+        }
 
-            return false;
-        });
+        log.debug("心跳检查完成，当前连接数: {}", sessions.size());
     }
 
     @PreDestroy
     public void cleanup() {
+        log.info("正在关闭WebSocket处理器...");
         scheduler.shutdown();
+        try {
+            if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                scheduler.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            scheduler.shutdownNow();
+        }
+
+        // 关闭所有连接
+        sessions.values().forEach(session -> {
+            try {
+                session.close(CloseStatus.GOING_AWAY);
+            } catch (Exception e) {
+                log.error("关闭会话失败", e);
+            }
+        });
     }
 }
 
-// 3. 控制器（可选，用于测试）
+// 3. 控制器（用于测试和管理）
 @RestController
 @RequestMapping("/api/websocket")
 public class WebSocketController {
@@ -193,68 +244,150 @@ public class WebSocketController {
     private MyWebSocketHandler webSocketHandler;
 
     @PostMapping("/broadcast")
-    public ResponseEntity<String> broadcast(@RequestBody String message) {
+    public ResponseEntity<Map<String, Object>> broadcast(@RequestBody Map<String, String> request) {
+        String message = request.get("message");
         webSocketHandler.broadcast(message);
-        return ResponseEntity.ok("消息已广播");
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "消息已广播");
+        response.put("connectionCount", webSocketHandler.getConnectionCount());
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/send/{sessionId}")
-    public ResponseEntity<String> sendToSession(@PathVariable String sessionId,
-                                              @RequestBody String message) {
+    public ResponseEntity<Map<String, Object>> sendToSession(@PathVariable String sessionId,
+                                                           @RequestBody Map<String, String> request) {
+        String message = request.get("message");
         webSocketHandler.sendToSession(sessionId, message);
-        return ResponseEntity.ok("消息已发送");
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "消息已发送");
+        response.put("sessionId", sessionId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> getStatus() {
+        Map<String, Object> status = new HashMap<>();
+        status.put("connectionCount", webSocketHandler.getConnectionCount());
+        status.put("sessionIds", webSocketHandler.getSessionIds());
+
+        return ResponseEntity.ok(status);
     }
 }
 
-// 4. 依赖配置 (pom.xml)
+// 4. Undertow配置 (application.yml)
 /*
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-websocket</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
+server:
+  undertow:
+    threads:
+      worker: 200
+      io: 8
+    buffer-size: 1024
+    direct-buffers: true
+    websockets:
+      per-frame-deflate: true
+      per-message-deflate: true
+      compression-level: 6
 */
 
-// 5. 客户端测试代码 (JavaScript)
+// 5. 依赖配置 (pom.xml)
 /*
-const socket = new WebSocket('ws://localhost:8080/websocket');
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <exclusions>
+            <exclusion>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-tomcat</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-undertow</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+</dependencies>
+*/
 
-socket.onopen = function(event) {
-    console.log('WebSocket连接已建立');
-};
-
-socket.onmessage = function(event) {
-    console.log('收到消息:', event.data);
-
-    // 如果收到ping，回复pong
-    if (event.data === 'ping') {
-        socket.send('pong');
+// 6. 客户端测试代码 (JavaScript)
+/*
+class WebSocketClient {
+    constructor(url) {
+        this.url = url;
+        this.socket = null;
+        this.reconnectInterval = 5000;
+        this.maxReconnectAttempts = 5;
+        this.reconnectAttempts = 0;
     }
-};
 
-socket.onclose = function(event) {
-    console.log('WebSocket连接已关闭');
-};
+    connect() {
+        this.socket = new WebSocket(this.url);
 
-socket.onerror = function(error) {
-    console.error('WebSocket错误:', error);
-};
+        this.socket.onopen = (event) => {
+            console.log('WebSocket连接已建立');
+            this.reconnectAttempts = 0;
+        };
+
+        this.socket.onmessage = (event) => {
+            console.log('收到消息:', event.data);
+
+            // 如果收到ping，回复pong
+            if (event.data === 'ping') {
+                this.send('pong');
+            }
+        };
+
+        this.socket.onclose = (event) => {
+            console.log('WebSocket连接已关闭');
+            this.reconnect();
+        };
+
+        this.socket.onerror = (error) => {
+            console.error('WebSocket错误:', error);
+        };
+    }
+
+    send(message) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.send(message);
+        } else {
+            console.warn('WebSocket未连接');
+        }
+    }
+
+    reconnect() {
+        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+            this.reconnectAttempts++;
+            console.log(`尝试重连 (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+            setTimeout(() => this.connect(), this.reconnectInterval);
+        } else {
+            console.error('重连失败，已达到最大重连次数');
+        }
+    }
+
+    close() {
+        if (this.socket) {
+            this.socket.close();
+        }
+    }
+}
+
+// 使用示例
+const client = new WebSocketClient('ws://localhost:8080/websocket');
+client.connect();
 
 // 发送消息
-function sendMessage(message) {
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(message);
-    }
-}
-
-// 发送心跳
-function sendHeartbeat() {
-    sendMessage('ping');
-}
-
-// 每30秒发送一次心跳（可选，服务器已经主动发送ping）
-setInterval(sendHeartbeat, 30000);
+setTimeout(() => {
+    client.send('Hello, WebSocket!');
+}, 1000);
 */
